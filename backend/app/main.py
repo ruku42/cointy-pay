@@ -9,6 +9,7 @@ from urllib.parse import parse_qsl
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
@@ -27,9 +28,110 @@ SMARTLINKS = [
 ]
 
 app = FastAPI(title="Cointy Pay API")
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def home():
-    return {"message": "Cointy Pay is running"}
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cointy Pay</title>
+
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background: #f4f7fb;
+                color: #222;
+            }
+
+            .container {
+                max-width: 500px;
+                margin: auto;
+                padding: 25px 18px;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: 42px;
+                margin-top: 30px;
+            }
+
+            h1 {
+                margin: 10px 0;
+                color: #5b3cc4;
+            }
+
+            .card {
+                background: white;
+                border-radius: 18px;
+                padding: 25px;
+                margin-top: 25px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            }
+
+            .balance {
+                font-size: 30px;
+                font-weight: bold;
+                margin: 15px 0;
+            }
+
+            button {
+                width: 100%;
+                padding: 15px;
+                margin-top: 12px;
+                border: none;
+                border-radius: 12px;
+                font-size: 17px;
+                font-weight: bold;
+                color: white;
+                background: #6c4bdc;
+            }
+
+            button:active {
+                transform: scale(0.98);
+            }
+
+            .info {
+                margin-top: 20px;
+                color: #777;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div class="logo">🪙</div>
+
+            <h1>Cointy Pay</h1>
+
+            <div class="card">
+                <div>Your Balance</div>
+
+                <div class="balance">
+                    0 Coins
+                </div>
+
+                <button onclick="alert('Earn feature coming soon!')">
+                    🎁 Earn Coins
+                </button>
+
+                <button onclick="alert('Withdraw feature coming soon!')">
+                    💰 Withdraw
+                </button>
+            </div>
+
+            <div class="info">
+                Complete tasks and earn coins.
+            </div>
+
+        </div>
+    </body>
+    </html>
+    """
 
 app.add_middleware(
     CORSMiddleware,
