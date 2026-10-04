@@ -64,16 +64,40 @@ function renderTasks(){
 
 async function openTask(taskId){
   try{
-    const result=await api("/api/tasks/click",{method:"POST",body:JSON.stringify({init_data:initData(),task_id:taskId})});
-    if(result.url){
-      if(tg?.openLink) tg.openLink(result.url);
-      else window.open(result.url,"_blank","noopener,noreferrer");
+
+    if (typeof show_11955158 !== "function") {
+      showNotice("Monetag ad is not ready. Please try again.", true);
+      return;
     }
-    showNotice("Task opened. No point is awarded from a SmartLink click alone.");
+
+    await show_11955158();
+
+    const result = await api("/api/tasks/click", {
+      method: "POST",
+      body: JSON.stringify({
+        init_data: initData(),
+        task_id: taskId
+      })
+    });
+
+    if (result.url) {
+      if (tg?.openLink) {
+        tg.openLink(result.url);
+      } else {
+        window.open(result.url, "_blank", "noopener,noreferrer");
+      }
+    }
+
+    showNotice("Task opened.");
+
     state.completed.add(taskId);
-    $("completed").textContent=state.completed.size;
+    $("completed").textContent = state.completed.size;
     renderTasks();
-  }catch(e){showNotice(e.message,true)}
+
+  } catch(e) {
+    console.error("Monetag error:", e);
+    showNotice("Ad could not be loaded. Please try again.", true);
+  }
 }
 
 async function loadHistory(){
