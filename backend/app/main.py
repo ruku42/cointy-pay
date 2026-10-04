@@ -23,6 +23,7 @@ DB = BASE / "cointy.db"
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "*")
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "")
 
 SMARTLINKS = [
     "https://omg10.com/4/11950214",
