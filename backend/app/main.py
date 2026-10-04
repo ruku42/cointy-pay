@@ -1,3 +1,5 @@
+import urllib.parse
+import urllib.request
 import os
 import time
 import json
@@ -600,3 +602,52 @@ def withdrawals(data: InitIn):
             for r in rows
         ]
 }
+
+# ==============================
+# FORCE JOIN CHECK
+# ==============================
+
+REQUIRED_CHANNEL = "@CoinTyPayOfficial"
+
+
+@app.post("/api/join-status")
+def join_status(data: InitIn):
+    user = validate_init_data(data.init_data)
+
+    url = (
+        f"https://api.telegram.org/bot{BOT_TOKEN}/getChatMember"
+        f"?chat_id={urllib.parse.quote(REQUIRED_CHANNEL)}"
+        f"&user_id={user['id']}"
+    )
+
+    try:
+        with urllib.request.urlopen(url, timeout=10) as response:
+            result = json.loads(response.read().decode())
+
+        if not result.get("ok"):
+            return {
+                "joined": False,
+                "channel": REQUIRED_CHANNEL
+            }
+
+        member = result.get("result", {})
+        status = member.get("status")
+
+        joined = (
+            status in ["creator", "administrator", "member"]
+            or (
+                status == "restricted"
+                and member.get("is_member") is True
+            )
+        )
+
+        return {
+            "joined": joined,
+            "channel": REQUIRED_CHANNEL
+        }
+
+    except Exception:
+        return {
+            "joined": False,
+            "channel": REQUIRED_CHANNEL
+        }
