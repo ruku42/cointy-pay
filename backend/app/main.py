@@ -27,6 +27,9 @@ SMARTLINKS = [
 ]
 
 app = FastAPI(title="Cointy Pay API")
+@app.get("/")
+async def home():
+    return {"message": "Cointy Pay is running"}
 
 app.add_middleware(
     CORSMiddleware,
