@@ -1,1 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071c14">
+  <title>Cointy Pay</title>
+  <link rel="icon" href="./assets/cointy-pay-logo.png">
+  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <img src="./assets/cointy-pay-logo.png" alt="Cointy Pay logo">
+        <div>
+          <strong>Cointy Pay</strong>
+          <span>Earn • Collect • Withdraw</span>
+        </div>
+      </div>
+      <button id="closeBtn" class="icon-btn" aria-label="Close">×</button>
+    </header>
 
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">YOUR BALANCE</span>
+          <div class="balance"><span id="points">0</span> <small>points</small></div>
+          <p>10 points = ৳10</p>
+        </div>
+        <div class="coin">C</div>
+      </section>
+
+      <div id="notice" class="notice hidden" role="status"></div>
+
+      <section class="stats">
+        <div><b id="completed">0</b><span>Completed</span></div>
+        <div><b>30</b><span>Total tasks</span></div>
+        <div><b>৳10</b><span>Minimum</span></div>
+      </section>
+
+      <nav class="tabs" aria-label="Sections">
+        <button class="tab active" data-tab="tasks">Tasks</button>
+        <button class="tab" data-tab="wallet">Wallet</button>
+        <button class="tab" data-tab="history">History</button>
+      </nav>
+
+      <section id="tasksTab" class="tab-panel">
+        <div class="section-head">
+          <div>
+            <h2>Daily Tasks</h2>
+            <p>Complete available tasks through genuine interaction.</p>
+          </div>
+        </div>
+        <div id="tasks" class="task-list"></div>
+      </section>
+
+      <section id="walletTab" class="tab-panel hidden">
+        <div class="panel">
+          <h2>Withdraw</h2>
+          <p class="muted">Minimum withdrawal: 10 points = ৳10. Requests are reviewed before payment.</p>
+          <form id="withdrawForm">
+            <label for="method">Payment method</label>
+            <select id="method">
+              <option value="bkash">bKash</option>
+              <option value="nagad">Nagad</option>
+            </select>
+
+            <label for="account">Mobile number</label>
+            <input id="account" inputmode="numeric" autocomplete="tel" placeholder="01XXXXXXXXX" maxlength="11" required>
+
+            <button class="primary wide" type="submit">Request ৳10</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="historyTab" class="tab-panel hidden">
+        <div class="panel">
+          <h2>Withdrawal History</h2>
+          <div id="history" class="history"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Cointy Pay</span>
+      <span>Secure server-side balance</span>
+    </footer>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
