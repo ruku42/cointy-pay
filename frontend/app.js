@@ -1,6 +1,5 @@
 /* Set this to your deployed backend URL before production. */
-const API_BASE = "https://YOUR-BACKEND-DOMAIN.example";
-
+const API_BASE = "https://cointy-pay.onrender.com";
 const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
