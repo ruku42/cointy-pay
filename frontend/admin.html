@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cointy Pay Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #07110d;
+      color: #ffffff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #25d366;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9ca3af;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: #101c17;
+      border: 1px solid #1f352c;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #b7c5bf;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: 1px solid #30483d;
+      background: #08120e;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .load-btn {
+      background: #25d366;
+      color: #06100b;
+    }
+
+    .paid-btn {
+      background: #25d366;
+      color: #06100b;
+    }
+
+    .reject-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    .withdrawal {
+      border-top: 1px solid #263b32;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+
+    .row {
+      margin: 7px 0;
+      word-break: break-word;
+    }
+
+    .label {
+      color: #8fa39a;
+    }
+
+    .value {
+      color: white;
+      font-weight: bold;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #6b4f00;
+      color: #ffd75a;
+      font-size: 13px;
+    }
+
+    .message {
+      text-align: center;
+      margin: 15px 0;
+      color: #25d366;
+      font-weight: bold;
+    }
+
+    .empty {
+      text-align: center;
+      color: #9ca3af;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>💰 Cointy Pay Admin</h1>
+  <div class="subtitle">Withdrawal Management</div>
+
+  <div class="card">
+
+    <label for="adminToken">
+      Admin Token
+    </label>
+
+    <input
+      id="adminToken"
+      type="password"
+      placeholder="Enter ADMIN_TOKEN"
+      autocomplete="off"
+    >
+
+    <button
+      class="load-btn"
+      id="loadBtn"
+      type="button"
+    >
+      🔄 Load Pending Withdrawals
+    </button>
+
+  </div>
+
+  <div id="message" class="message"></div>
+
+  <div id="withdrawals"></div>
+
+</div>
+
+<script>
+  const API_BASE = "https://cointy-pay.onrender.com";
+
+  const tokenInput = document.getElementById("adminToken");
+  const loadBtn = document.getElementById("loadBtn");
+  const message = document.getElementById("message");
+  const withdrawalsBox = document.getElementById("withdrawals");
+
+  function showMessage(text) {
+    message.textContent = text;
+  }
+
+  async function loadWithdrawals() {
+
+    const token = tokenInput.value.trim();
+
+    if (!token) {
+      showMessage("⚠️ Admin Token দিন");
+      return;
+    }
+
+    showMessage("Loading...");
+    withdrawalsBox.innerHTML = "";
+
+    try {
+
+      const response = await fetch(
+        API_BASE + "/api/admin/withdrawals",
+        {
+          method: "GET",
+          headers: {
+            "X-Admin-Token": token
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Unauthorized"
+        );
+      }
+
+      const items = data.items || [];
+
+      if (items.length === 0) {
+        withdrawalsBox.innerHTML =
+          '<div class="card empty">✅ No pending withdrawals</div>';
+
+        showMessage("");
+        return;
+      }
+
+      showMessage(
+        "Pending withdrawals: " + items.length
+      );
+
+      items.forEach(function(item) {
+
+        const card = document.createElement("div");
+        card.className = "card withdrawal";
+
+        const date = new Date(
+          item.created_at * 1000
+        );
+
+        card.innerHTML = `
+          <div class="row">
+            <span class="label">Withdrawal ID:</span><br>
+            <span class="value">${item.id}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">Telegram ID:</span><br>
+            <span class="value">${item.telegram_id}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">Amount:</span>
+            <span class="value">৳${item.amount_bdt}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">Method:</span>
+            <span class="value">${item.method.toUpperCase()}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">Account:</span>
+            <span class="value">${item.account}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">Status:</span>
+            <span class="status">${item.status}</span>
+          </div>
+
+          <div class="row">
+            <span class="label">Date:</span>
+            <span class="value">${date.toLocaleString()}</span>
+          </div>
+
+          <button
+            class="paid-btn"
+            type="button"
+            data-id="${item.id}"
+            data-status="paid"
+          >
+            ✅ Mark as Paid
+          </button>
+
+          <button
+            class="reject-btn"
+            type="button"
+            data-id="${item.id}"
+            data-status="rejected"
+          >
+            ❌ Reject Withdrawal
+          </button>
+        `;
+
+        withdrawalsBox.appendChild(card);
+      });
+
+      document
+        .querySelectorAll("[data-status]")
+        .forEach(function(button) {
+
+          button.addEventListener(
+            "click",
+            function() {
+
+              const id = button.dataset.id;
+              const status = button.dataset.status;
+
+              updateWithdrawal(
+                id,
+                status
+              );
+            }
+          );
+
+        });
+
+    } catch (error) {
+
+      showMessage(
+        "❌ " + error.message
+      );
+
+    }
+  }
+
+
+  async function updateWithdrawal(id, status) {
+
+    const token = tokenInput.value.trim();
+
+    if (!token) {
+      showMessage("⚠️ Admin Token দিন");
+      return;
+    }
+
+    const actionText =
+      status === "paid"
+        ? "Paid"
+        : "Rejected";
+
+    const confirmed = confirm(
+      "এই withdrawal " +
+      actionText +
+      " করতে চান?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    showMessage(
+      "Processing..."
+    );
+
+    try {
+
+      const response = await fetch(
+        API_BASE + "/api/admin/withdrawal-status",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Token": token
+          },
+
+          body: JSON.stringify({
+            id: id,
+            status: status
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Failed"
+        );
+      }
+
+      showMessage(
+        status === "paid"
+          ? "✅ Withdrawal marked as Paid"
+          : "❌ Withdrawal rejected and points returned"
+      );
+
+      loadWithdrawals();
+
+    } catch (error) {
+
+      showMessage(
+        "❌ " + error.message
+      );
+
+    }
+  }
+
+
+  loadBtn.addEventListener(
+    "click",
+    loadWithdrawals
+  );
+
+</script>
+
+</body>
+  </html>
