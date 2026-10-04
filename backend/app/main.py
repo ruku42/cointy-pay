@@ -34,6 +34,7 @@ async def home():
     <!DOCTYPE html>
     <html lang="en">
     <head>
+    <script src='//libtl.com/sdk.js' data-zone='11955158' data-sdk='show_11955158'></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cointy Pay</title>
