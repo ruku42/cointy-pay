@@ -35,8 +35,29 @@ async function load(){
     showNotice("Open Cointy Pay from inside Telegram.",true);
     return;
   }
+
   try{
-    const data=await api("/api/me",{method:"POST",body:JSON.stringify({init_data:initData()})});
+    const join = await api("/api/join-status",{
+      method:"POST",
+      body:JSON.stringify({
+        init_data:initData()
+      })
+    });
+
+    if(!join.joined){
+      $("joinGate").style.display="flex";
+      return;
+    }
+
+    $("joinGate").style.display="none";
+
+    const data=await api("/api/me",{
+      method:"POST",
+      body:JSON.stringify({
+        init_data:initData()
+      })
+    });
+
     state.user=data.user;
     state.completed=new Set(data.completed);
     $("points").textContent=data.user.points;
@@ -44,10 +65,14 @@ async function load(){
 
     const taskData=await api("/api/tasks");
     state.tasks=taskData.tasks;
+
     renderTasks();
     await loadHistory();
     hideNotice();
-  }catch(e){showNotice(e.message,true)}
+
+  }catch(e){
+    showNotice(e.message,true);
+  }
 }
 
 function renderTasks(){
@@ -134,4 +159,37 @@ $("withdrawForm").addEventListener("submit",async e=>{
 });
 
 $("closeBtn").addEventListener("click",()=>tg?.close?.());
+
+$("checkJoinBtn").addEventListener("click",async()=>{
+  const btn=$("checkJoinBtn");
+  const msg=$("joinMessage");
+
+  btn.disabled=true;
+  btn.textContent="Checking...";
+  msg.textContent="Checking channel membership...";
+
+  try{
+    const result=await api("/api/join-status",{
+      method:"POST",
+      body:JSON.stringify({
+        init_data:initData()
+      })
+    });
+
+    if(result.joined){
+      msg.textContent="✅ Membership verified!";
+      $("joinGate").style.display="none";
+      await load();
+    }else{
+      msg.textContent="❌ Please join the channel first.";
+    }
+
+  }catch(e){
+    msg.textContent="⚠️ Verification failed. Please try again.";
+  }
+
+  btn.disabled=false;
+  btn.textContent="✅ Check Joined";
+});
+
 load();
