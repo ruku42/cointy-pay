@@ -93,5 +93,79 @@
     </footer>
   </div>
   <script src="./app.js"></script>
+<div id="joinGate" style="
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:#06140f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+">
+  <div style="
+    width:100%;
+    max-width:380px;
+    text-align:center;
+    background:#0c2119;
+    border:1px solid #1d4938;
+    border-radius:24px;
+    padding:30px 22px;
+    box-sizing:border-box;
+  ">
+    <img
+      src="./assets/cointy-pay-logo.png"
+      alt="Cointy Pay"
+      style="width:90px;height:90px;border-radius:22px;margin-bottom:16px;"
+    >
+
+    <h2 style="margin:0 0 10px;color:white;">
+      Welcome to Cointy Pay
+    </h2>
+
+    <p style="color:#a8bbb3;line-height:1.5;margin-bottom:22px;">
+      Join our official announcement channel first,
+      then continue to Cointy Pay.
+    </p>
+
+    <a
+      href="https://t.me/CoinTyPayOfficial"
+      target="_blank"
+      style="
+        display:block;
+        text-decoration:none;
+        background:#1f8f62;
+        color:white;
+        padding:14px;
+        border-radius:14px;
+        font-weight:700;
+        margin-bottom:12px;
+      "
+    >
+      📢 Join Announcement Channel
+    </a>
+
+    <button
+      id="checkJoinBtn"
+      style="
+        width:100%;
+        border:0;
+        background:#d4a62a;
+        color:#111;
+        padding:14px;
+        border-radius:14px;
+        font-weight:700;
+        font-size:15px;
+      "
+    >
+      ✅ Check Joined
+    </button>
+
+    <p
+      id="joinMessage"
+      style="color:#a8bbb3;margin:16px 0 0;font-size:14px;"
+    ></p>
+  </div>
+</div>
 </body>
 </html>
