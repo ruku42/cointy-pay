@@ -603,6 +603,143 @@ def withdrawals(data: InitIn):
             for r in rows
         ]
 }
+    # ==============================
+# ADMIN WITHDRAWAL MANAGEMENT
+# ==============================
+
+def check_admin(request: Request):
+    token = request.headers.get("X-Admin-Token")
+
+    if not token or token != ADMIN_TOKEN:
+        raise HTTPException(
+            status_code=401,
+            detail="Unauthorized"
+        )
+
+
+@app.get("/api/admin/withdrawals")
+def admin_withdrawals(request: Request):
+    check_admin(request)
+
+    c = conn()
+
+    rows = c.execute(
+        """
+        SELECT
+            id,
+            telegram_id,
+            points,
+            amount_bdt,
+            method,
+            account,
+            status,
+            created_at
+        FROM withdrawals
+        WHERE status = 'pending'
+        ORDER BY created_at ASC
+        LIMIT 100
+        """
+    ).fetchall()
+
+    c.close()
+
+    return {
+        "items": [
+            dict(r)
+            for r in rows
+        ]
+    }
+
+
+@app.post("/api/admin/withdrawal-status")
+def admin_withdrawal_status(
+    data: dict,
+    request: Request
+):
+    check_admin(request)
+
+    withdrawal_id = str(
+        data.get("id", "")
+    ).strip()
+
+    new_status = str(
+        data.get("status", "")
+    ).lower().strip()
+
+    if not withdrawal_id:
+        raise HTTPException(
+            status_code=400,
+            detail="Withdrawal ID is required"
+        )
+
+    if new_status not in ("paid", "rejected"):
+        raise HTTPException(
+            status_code=400,
+            detail="Status must be paid or rejected"
+        )
+
+    c = conn()
+
+    withdrawal = c.execute(
+        """
+        SELECT
+            id,
+            telegram_id,
+            points,
+            status
+        FROM withdrawals
+        WHERE id=?
+        """,
+        (withdrawal_id,)
+    ).fetchone()
+
+    if not withdrawal:
+        c.close()
+        raise HTTPException(
+            status_code=404,
+            detail="Withdrawal not found"
+        )
+
+    if withdrawal["status"] != "pending":
+        c.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Withdrawal is already processed"
+        )
+
+    if new_status == "rejected":
+        c.execute(
+            """
+            UPDATE users
+            SET points = points + ?
+            WHERE telegram_id=?
+            """,
+            (
+                withdrawal["points"],
+                withdrawal["telegram_id"]
+            )
+        )
+
+    c.execute(
+        """
+        UPDATE withdrawals
+        SET status=?
+        WHERE id=?
+        """,
+        (
+            new_status,
+            withdrawal_id
+        )
+    )
+
+    c.commit()
+    c.close()
+
+    return {
+        "ok": True,
+        "id": withdrawal_id,
+        "status": new_status
+    }
 
 # ==============================
 # FORCE JOIN CHECK
