@@ -5,43 +5,71 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071c14">
   <title>Cointy Pay</title>
+
   <link rel="icon" href="./assets/cointy-pay-logo.png">
+
   <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
 
-<script src='//libtl.com/sdk.js' data-zone='11955158' data-sdk='show_11955158'></script>
+  <script
+    src="//libtl.com/sdk.js"
+    data-zone="11955158"
+    data-sdk="show_11955158">
+  </script>
 
-<link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
+
   <div class="app">
+
     <header class="topbar">
       <div class="brand">
         <img src="./assets/cointy-pay-logo.png" alt="Cointy Pay logo">
+
         <div>
           <strong>Cointy Pay</strong>
           <span>Earn • Collect • Withdraw</span>
         </div>
       </div>
+
       <button id="closeBtn" class="icon-btn" aria-label="Close">×</button>
     </header>
 
     <main>
+
       <section class="hero">
         <div class="hero-copy">
           <span class="eyebrow">YOUR BALANCE</span>
-          <div class="balance"><span id="points">0</span> <small>points</small></div>
+
+          <div class="balance">
+            <span id="points">0</span>
+            <small>points</small>
+          </div>
+
           <p>10 points = ৳10</p>
         </div>
+
         <div class="coin">C</div>
       </section>
 
       <div id="notice" class="notice hidden" role="status"></div>
 
       <section class="stats">
-        <div><b id="completed">0</b><span>Completed</span></div>
-        <div><b>30</b><span>Total tasks</span></div>
-        <div><b>৳10</b><span>Minimum</span></div>
+        <div>
+          <b id="completed">0</b>
+          <span>Completed</span>
+        </div>
+
+        <div>
+          <b>30</b>
+          <span>Total tasks</span>
+        </div>
+
+        <div>
+          <b>৳10</b>
+          <span>Minimum</span>
+        </div>
       </section>
 
       <nav class="tabs" aria-label="Sections">
@@ -51,121 +79,183 @@
       </nav>
 
       <section id="tasksTab" class="tab-panel">
+
         <div class="section-head">
           <div>
             <h2>Daily Tasks</h2>
             <p>Complete available tasks through genuine interaction.</p>
           </div>
         </div>
+
         <div id="tasks" class="task-list"></div>
+
       </section>
 
       <section id="walletTab" class="tab-panel hidden">
+
         <div class="panel">
+
           <h2>Withdraw</h2>
-          <p class="muted">Minimum withdrawal: 10 points = ৳10. Requests are reviewed before payment.</p>
+
+          <p class="muted">
+            Minimum withdrawal: 10 points = ৳10.
+            Requests are reviewed before payment.
+          </p>
+
           <form id="withdrawForm">
+
             <label for="method">Payment method</label>
+
             <select id="method">
               <option value="bkash">bKash</option>
               <option value="nagad">Nagad</option>
             </select>
 
             <label for="account">Mobile number</label>
-            <input id="account" inputmode="numeric" autocomplete="tel" placeholder="01XXXXXXXXX" maxlength="11" required>
 
-            <button class="primary wide" type="submit">Request ৳10</button>
+            <input
+              id="account"
+              inputmode="numeric"
+              autocomplete="tel"
+              placeholder="01XXXXXXXXX"
+              maxlength="11"
+              required
+            >
+
+            <button class="primary wide" type="submit">
+              Request ৳10
+            </button>
+
           </form>
+
         </div>
+
       </section>
 
       <section id="historyTab" class="tab-panel hidden">
+
         <div class="panel">
+
           <h2>Withdrawal History</h2>
+
           <div id="history" class="history"></div>
+
         </div>
+
       </section>
+
     </main>
 
     <footer>
       <span>Cointy Pay</span>
       <span>Secure server-side balance</span>
     </footer>
+
   </div>
-<div id="joinGate" style="
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  background:#06140f;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-">
-  <div style="
-    width:100%;
-    max-width:380px;
-    text-align:center;
-    background:#0c2119;
-    border:1px solid #1d4938;
-    border-radius:24px;
-    padding:30px 22px;
-    box-sizing:border-box;
-  ">
-    <img
-      src="./assets/cointy-pay-logo.png"
-      alt="Cointy Pay"
-      style="width:90px;height:90px;border-radius:22px;margin-bottom:16px;"
-    >
 
-    <h2 style="margin:0 0 10px;color:white;">
-      Welcome to Cointy Pay
-    </h2>
 
-    <p style="color:#a8bbb3;line-height:1.5;margin-bottom:22px;">
-      Join our official announcement channel first,
-      then continue to Cointy Pay.
-    </p>
+  <!-- FORCE JOIN SCREEN -->
 
-    <a
-      href="https://t.me/CoinTyPayOfficial"
-      target="_blank"
-      style="
-        display:block;
-        text-decoration:none;
-        background:#1f8f62;
-        color:white;
-        padding:14px;
-        border-radius:14px;
-        font-weight:700;
-        margin-bottom:12px;
-      "
-    >
-      📢 Join Announcement Channel
-    </a>
+  <div
+    id="joinGate"
+    style="
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:#06140f;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      box-sizing:border-box;
+    "
+  >
 
-    <button
-      id="checkJoinBtn"
+    <div
       style="
         width:100%;
-        border:0;
-        background:#d4a62a;
-        color:#111;
-        padding:14px;
-        border-radius:14px;
-        font-weight:700;
-        font-size:15px;
+        max-width:380px;
+        text-align:center;
+        background:#0c2119;
+        border:1px solid #1d4938;
+        border-radius:24px;
+        padding:30px 22px;
+        box-sizing:border-box;
       "
     >
-      ✅ Check Joined
-    </button>
 
-    <p
-      id="joinMessage"
-      style="color:#a8bbb3;margin:16px 0 0;font-size:14px;"
-    ></p>
+      <img
+        src="./assets/cointy-pay-logo.png"
+        alt="Cointy Pay"
+        style="
+          width:90px;
+          height:90px;
+          object-fit:contain;
+          margin-bottom:12px;
+        "
+      >
+
+      <h2 style="margin:0 0 10px;color:white;">
+        Welcome to Cointy Pay
+      </h2>
+
+      <p style="color:#a8bbb3;margin:0 0 20px;font-size:14px;">
+        Join our official announcement channel first,
+        then continue to Cointy Pay.
+      </p>
+
+      <a
+        href="https://t.me/CoinTyPayOfficial"
+        target="_blank"
+        rel="noopener"
+        style="
+          display:block;
+          text-decoration:none;
+          background:#1f8f62;
+          color:white;
+          padding:14px;
+          border-radius:14px;
+          font-weight:700;
+          margin-bottom:12px;
+        "
+      >
+        📢 Join Announcement Channel
+      </a>
+
+      <button
+        id="checkJoinBtn"
+        type="button"
+        style="
+          width:100%;
+          border:0;
+          background:#d4a62a;
+          color:#111;
+          padding:14px;
+          border-radius:14px;
+          font-weight:700;
+          font-size:15px;
+        "
+      >
+        ✅ Check Joined
+      </button>
+
+      <p
+        id="joinMessage"
+        style="
+          color:#a8bbb3;
+          margin:16px 0 0;
+          font-size:14px;
+        "
+      ></p>
+
+    </div>
+
   </div>
-</div>
-<script src="./app.js"></script>
+
+
+  <!-- IMPORTANT: app.js must be LAST -->
+
+  <script src="./app.js"></script>
+
 </body>
 </html>
