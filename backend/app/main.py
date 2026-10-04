@@ -116,9 +116,9 @@ async def home():
                     0 Coins
                 </div>
 
-                <button onclick="alert('Earn feature coming soon!')">
-                    🎁 Earn Coins
-                </button>
+                <button onclick="watchAd()">
+    🎁 Watch Ad & Earn
+</button>
 
                 <button onclick="alert('Withdraw feature coming soon!')">
                     💰 Withdraw
@@ -130,7 +130,16 @@ async def home():
             </div>
 
         </div>
-    </body>
+   <script>
+async function watchAd() {
+    try {
+        await show_11955158('pop');
+        alert("Ad completed!");
+    } catch (e) {
+        console.log("Ad error:", e);
+    }
+}
+</script> </body>
     </html>
     """
 
